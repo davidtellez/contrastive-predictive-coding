@@ -187,68 +187,43 @@ class MnistHandler(object):
 
         return y_len
 
-# class ArithmeticGenerator(object):
-#
-#     def __init__(self, batch_size, subset, terms, positive_samples=1, image_size=28, color=False, rescale=True):
-#
-#         # Set params
-#         self.positive_samples = positive_samples
-#         self.batch_size = batch_size
-#         self.subset = subset
-#         self.terms = terms
-#         self.image_size = image_size
-#         self.color = color
-#         self.rescale = rescale
-#
-#         # Initialize MNIST dataset
-#         self.mnist_handler = MnistHandler()
-#         self.n_samples = self.mnist_handler.get_n_samples(subset) // terms
-#         self.n_batches = self.n_samples // batch_size
-#
-#     def __iter__(self):
-#         return self
-#
-#     def __next__(self):
-#         return self.next()
-#
-#     def __len__(self):
-#         return self.n_batches
-#
-#     def next(self):
-#
-#         # Get samples
-#         x, y = self.mnist_handler.get_batch(self.subset, self.batch_size*self.terms, self.image_size, self.color, self.rescale)
-#
-#         # Assemble batch
-#         x_images = x.reshape((self.batch_size, self.terms, x.shape[1], x.shape[2], x.shape[3]))
-#         x_labels = y.reshape((self.batch_size, self.terms))
-#
-#         # Compute labels for each image
-#         y_labels = x_labels.sum(axis=1)
-#         y_labels = np.mod(y_labels, 10)
-#
-#         # Compute labels for each sentence
-#         positive_samples_n = self.positive_samples
-#         sentence_labels = np.zeros_like(y_labels)
-#         for i, y_label in enumerate(y_labels):
-#             if positive_samples_n > 0:
-#                 # Positive
-#                 sentence_labels[i] = 1
-#             else:
-#                 # Negative
-#                 y_labels[i] = np.mod(y_labels[i] + np.random.randint(1, 10), 10)
-#                 sentence_labels[i] = 0
-#
-#             positive_samples_n -= 1
-#
-#         # Retrieve label images
-#         y_images, _ = self.mnist_handler.get_batch_by_labels(self.subset, y_labels, self.image_size, self.color, self.rescale)
-#
-#         # Randomize
-#         idxs = np.random.choice(sentence_labels.shape[0], sentence_labels.shape[0], replace=False)
-#
-#         # return x_images[idxs, ...], y_images[idxs, ...], x_labels[idxs, ...], y_labels[idxs, ...], sentence_labels[idxs, ...]
-#         return [x_images[idxs, ...], y_images[idxs, ...]], sentence_labels[idxs, ...]
+
+class MnistGenerator(object):
+
+    ''' Data generator providing MNIST data '''
+
+    def __init__(self, batch_size, subset, image_size=28, color=False, rescale=True):
+
+        # Set params
+        self.batch_size = batch_size
+        self.subset = subset
+        self.image_size = image_size
+        self.color = color
+        self.rescale = rescale
+
+        # Initialize MNIST dataset
+        self.mnist_handler = MnistHandler()
+        self.n_samples = self.mnist_handler.get_n_samples(subset)
+        self.n_batches = self.n_samples // batch_size
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.next()
+
+    def __len__(self):
+        return self.n_batches
+
+    def next(self):
+
+        # Get data
+        x, y = self.mnist_handler.get_batch(self.subset, self.batch_size, self.image_size, self.color, self.rescale)
+
+        # Convert y to one-hot
+        y_h = np.eye(10)[y]
+
+        return x, y_h
 
 
 class SortedNumberGenerator(object):
