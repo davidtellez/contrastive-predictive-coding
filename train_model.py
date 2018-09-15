@@ -15,17 +15,20 @@ def network_encoder(x, code_size):
 
     ''' Define the network mapping images to embeddings '''
 
-    x = keras.layers.Conv2D(filters=32, kernel_size=3, strides=2, activation='linear')(x)
+    x = keras.layers.Conv2D(filters=64, kernel_size=3, strides=2, activation='linear')(x)
     x = keras.layers.BatchNormalization()(x)
     x = keras.layers.LeakyReLU()(x)
-    x = keras.layers.Conv2D(filters=32, kernel_size=3, strides=2, activation='linear')(x)
+    x = keras.layers.Conv2D(filters=64, kernel_size=3, strides=2, activation='linear')(x)
     x = keras.layers.BatchNormalization()(x)
     x = keras.layers.LeakyReLU()(x)
-    x = keras.layers.Conv2D(filters=32, kernel_size=3, strides=2, activation='linear')(x)
+    x = keras.layers.Conv2D(filters=64, kernel_size=3, strides=2, activation='linear')(x)
+    x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.LeakyReLU()(x)
+    x = keras.layers.Conv2D(filters=64, kernel_size=3, strides=2, activation='linear')(x)
     x = keras.layers.BatchNormalization()(x)
     x = keras.layers.LeakyReLU()(x)
     x = keras.layers.Flatten()(x)
-    x = keras.layers.Dense(units=128, activation='linear')(x)
+    x = keras.layers.Dense(units=256, activation='linear')(x)
     x = keras.layers.BatchNormalization()(x)
     x = keras.layers.LeakyReLU()(x)
     x = keras.layers.Dense(units=code_size, activation='linear', name='encoder_embedding')(x)
@@ -37,9 +40,9 @@ def network_autoregressive(x):
 
     ''' Define the network that integrates information along the sequence '''
 
-    x = keras.layers.GRU(units=128, return_sequences=True)(x)
-    x = keras.layers.BatchNormalization()(x)
-    x = keras.layers.GRU(units=128, return_sequences=False, name='ar_context')(x)
+    # x = keras.layers.GRU(units=256, return_sequences=True)(x)
+    # x = keras.layers.BatchNormalization()(x)
+    x = keras.layers.GRU(units=256, return_sequences=False, name='ar_context')(x)
 
     return x
 
@@ -165,12 +168,12 @@ if __name__ == "__main__":
     train_model(
         epochs=10,
         batch_size=32,
-        output_dir='models',
+        output_dir='models/64x64',
         code_size=128,
         lr=1e-3,
         terms=4,
         predict_terms=4,
-        image_size=28,
+        image_size=64,
         color=True
     )
 
