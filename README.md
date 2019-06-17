@@ -26,12 +26,19 @@ After 10 training epochs, CPC reports a 99% accuracy on the contrastive task. Af
 - Execute ```python train_model.py``` to train the CPC model.
 - Execute ```python benchmark_model.py``` to train the MLP on top of the CPC encoder.
 
+With pytorch:
+- Execute ```python torch_train_model.py``` to train the CPC model.
+
 ### Requisites
 
 - [Anaconda Python 3.5.3](https://www.continuum.io/downloads)
 - [Keras 2.0.6](https://keras.io/)
 - [Tensorflow 1.4.0](https://www.tensorflow.org/)
 - GPU for fast training.
+
+For pytorch:
+- python==3.6
+- [torch==1.1.0](https://pytorch.org/get-started/locally/)
 
 ### References
 
